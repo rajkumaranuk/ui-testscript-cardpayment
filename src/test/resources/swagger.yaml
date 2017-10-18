@@ -1,0 +1,252 @@
+---
+swagger: "2.0"
+info:
+  description: "This is a spec for Card Payment REST API"
+  version: "v1"
+  title: "Swagger Spec For Card Payment REST API"
+  termsOfService: "http://localhost/terms-and-conditions"
+  contact:
+    name: "Retail API Team"
+    url: "http://www.esure.com"
+    email: "api-dev@esure.com"
+  license:
+    name: "Company Licence"
+    url: "http://www.esure.com/licenses/LICENSE-2.0.html"
+host: "localhost:9120"
+basePath: "/v1"
+tags:
+- name: "payment"
+schemes:
+- "http"
+- "https"
+paths:
+  /payment/setup:
+    post:
+      tags:
+      - "payment"
+      summary: "setup"
+      description: "Sets up the host card capture for payment"
+      operationId: "setup"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: false
+        schema:
+          $ref: "#/definitions/HCCPaymentSetupRequest"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/HCCPaymentSetupResponse"
+        500:
+          description: "Failure"
+  /payment/query:
+    post:
+      tags:
+      - "payment"
+      summary: "query"
+      description: "Retrieves the hosted card capture results"
+      operationId: "query"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: false
+        schema:
+          $ref: "#/definitions/HCCPaymentQueryRequest"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/HCCPaymentQueryResponse"
+        500:
+          description: "Failure"
+  /payment/enrol:
+    post:
+      tags:
+      - "payment"
+      summary: "enrol"
+      description: "Enrols 3D secure"
+      operationId: "enrol"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: false
+        schema:
+          $ref: "#/definitions/ThreeDSEnrolRequest"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/ThreeDSEnrolResponse"
+        500:
+          description: "Failure"
+  /payment/authorise:
+    post:
+      tags:
+      - "payment"
+      summary: "authorise"
+      description: "Authorises 3D Secure payment"
+      operationId: "authorise"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: false
+        schema:
+          $ref: "#/definitions/ThreeDSAuthoriseRequest"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/ThreeDSAuthoriseResponse"
+        500:
+          description: "Failure"
+definitions:
+  HCCPaymentSetupRequest:
+    type: "object"
+    properties:
+      productCode:
+        type: "string"
+      esureReference:
+        type: "string"
+      expiryDate:
+        type: "string"
+      amount:
+        type: "integer"
+        format: "int32"
+      callbackSuccessURL:
+        type: "string"
+      callbackExpiryURL:
+        type: "string"
+      dynamicData:
+        type: "array"
+        items:
+          type: "string"
+  HCCPaymentSetupResponse:
+    type: "object"
+    properties:
+      status:
+          type: "integer"
+          format: "int32"
+      commonValidationFailures:
+        type: "array"
+        items:
+          type: "integer"
+          format: "int32"
+      reason:
+        type: "string"
+      timestamp:
+        type: "string"
+        format: "date-time"
+      iframeURL:
+        type: "string"
+  HCCPaymentQueryRequest:
+    type: "object"
+    properties:
+      productCode:
+        type: "string"
+      pspReference:
+        type: "string"
+  HCCPaymentQueryResponse:
+    type: "object"
+    properties:
+      status:
+          type: "integer"
+          format: "int32"
+      commonValidationFailures:
+        type: "array"
+        items:
+          type: "integer"
+          format: "int32"
+      reason:
+        type: "string"
+      timestamp:
+        type: "string"
+        format: "date-time"
+      cardScheme:
+        type: "string"
+      country:
+        type: "string"
+      expiryDate:
+        type: "string"
+      creditCardObfuscated:
+        type: "string"
+      dynamicCapturer:
+        type: "array"
+        items:
+          type: "string"
+  ThreeDSEnrolRequest:
+    type: "object"
+    properties:
+      productCode:
+        type: "string"
+      pspReference:
+        type: "string"
+      cardNumber:
+        type: "string"
+      esureReference:
+        type: "string"
+      postCode:
+        type: "string"
+      address:
+        type: "string"
+      merchantURL:
+        type: "string"
+      browserAcceptHeader:
+        type: "string"
+      browserAgent:
+        type: "string"
+      amount:
+        type: "integer"
+        format: "int32"
+      cpaAgreement:
+        type: "boolean"
+      numberOfTries:
+        type: "integer"
+        format: "int32"
+  ThreeDSEnrolResponse:
+    type: "object"
+    properties:
+      status:
+          type: "integer"
+          format: "int32"
+      commonValidationFailures:
+        type: "array"
+        items:
+          type: "integer"
+          format: "int32"
+      reason:
+        type: "string"
+      timestamp:
+        type: "string"
+        format: "date-time"
+      cardScheme:
+        type: "string"
+      acsURL:
+        type: "string"
+      paresMessage:
+        type: "string"
+  ThreeDSAuthoriseRequest:
+    type: "object"
+    properties:
+      productCode:
+        type: "string"
+      pspReference:
+        type: "string"
+      paresMessage:
+        type: "string"
+  ThreeDSAuthoriseResponse:
+    type: "object"
+    properties:
+      status:
+          type: "integer"
+          format: "int32"
+      commonValidationFailures:
+        type: "array"
+        items:
+          type: "integer"
+          format: "int32"
+      reason:
+        type: "string"
+      timestamp:
+        type: "string"
+        format: "date-time"
